@@ -50,6 +50,10 @@
             color: #333;
         }
         
+        .password-input-container {
+            position: relative;
+        }
+        
         .form-group input {
             width: 100%;
             padding: 12px 15px;
@@ -57,6 +61,22 @@
             border-radius: 8px;
             font-size: 1rem;
             transition: border-color 0.3s;
+        }
+        
+        .password-input {
+            padding-right: 45px !important;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
         }
         
         .form-group input:focus {
@@ -97,15 +117,6 @@
             display: none;
         }
         
-        .success-message {
-            background: #efe;
-            color: #3c3;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
         .back-link {
             margin-top: 2rem;
             text-align: center;
@@ -120,6 +131,10 @@
         .back-link a:hover {
             color: hsl(43, 96%, 49%);
         }
+
+        .loading {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -128,9 +143,8 @@
         <div class="subtitle">Admin Dashboard Access</div>
         
         <div id="error-message" class="error-message"></div>
-        <div id="success-message" class="success-message"></div>
         
-        <form id="loginForm" onsubmit="return false;">
+        <form id="loginForm">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
@@ -138,11 +152,15 @@
             
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-input-container">
+                    <input type="password" id="password" name="password" class="password-input" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                </div>
             </div>
             
-            <button type="button" class="login-btn" id="loginBtn" onclick="handleLogin()">
-                Access Admin Dashboard
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span class="normal-text">Access Admin Dashboard</span>
+                <span class="loading">Logging in...</span>
             </button>
         </form>
         
@@ -152,27 +170,57 @@
     </div>
 
     <script>
-        async function handleLogin() {
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'none';
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('loginBtn');
+            const normalText = btn.querySelector('.normal-text');
+            const loadingText = btn.querySelector('.loading');
+            
+            if (loading) {
+                btn.disabled = true;
+                normalText.style.display = 'none';
+                loadingText.style.display = 'inline';
+            } else {
+                btn.disabled = false;
+                normalText.style.display = 'inline';
+                loadingText.style.display = 'none';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            hideError();
+            setLoading(true);
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
-            
-            if (!username || !password) {
-                errorMessage.textContent = 'Please enter both username and password';
-                errorMessage.style.display = 'block';
-                return;
-            }
-            
-            // Disable button and show loading
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Authenticating...';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
             
             try {
-                const response = await fetch('/api/admin/login', {
+                const response = await fetch('/admin/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -180,48 +228,24 @@
                     body: JSON.stringify({ username, password })
                 });
                 
-                const result = await response.json();
+                const data = await response.json();
                 
-                if (response.ok && result.success) {
-                    // Store auth token if provided
-                    if (result.token) {
-                        localStorage.setItem('admin_token', result.token);
-                    }
-                    
-                    // Show success message
-                    successMessage.textContent = 'Login successful! Redirecting to dashboard...';
-                    successMessage.style.display = 'block';
-                    loginBtn.textContent = 'Login Successful!';
-                    
-                    // Redirect to admin dashboard after brief delay
-                    setTimeout(() => {
-                        window.location.href = '/admin/dashboard';
-                    }, 1500);
+                if (response.ok && data.success) {
+                    window.location.href = data.redirect || '/admin/dashboard';
                 } else {
-                    // Show error message
-                    errorMessage.textContent = result.message || 'Invalid credentials';
-                    errorMessage.style.display = 'block';
-                    
-                    // Re-enable button
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Access Admin Dashboard';
+                    showError(data.error || 'Invalid credentials');
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                errorMessage.textContent = 'Connection error. Please try again.';
-                errorMessage.style.display = 'block';
-                
-                // Re-enable button
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Access Admin Dashboard';
+                showError('Connection error. Please try again.');
+            } finally {
+                setLoading(false);
             }
-        }
-        
-        // Allow Enter key to submit
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
+        });
+
+        // Focus username field on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').focus();
         });
     </script>
 </body>
