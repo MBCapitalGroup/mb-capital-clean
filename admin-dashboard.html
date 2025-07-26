@@ -4,418 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - MB Capital Group</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: #f8fafc;
-            color: #333;
-        }
-        
-        .header {
-            background: hsl(219, 79%, 24%);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .header-right {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        
-        .logout-btn {
-            background: hsl(43, 96%, 49%);
-            color: hsl(219, 79%, 24%);
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .logout-btn:hover {
-            background: hsl(43, 96%, 40%);
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-        
-        .dashboard-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: hsl(219, 79%, 24%);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: hsl(219, 79%, 24%);
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        
-        .nav-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-        
-        .nav-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
-        }
-        
-        .nav-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: hsl(219, 79%, 24%);
-        }
-        
-        .nav-description {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        .status-active {
-            background: #22c55e;
-        }
-        
-        .status-warning {
-            background: #f59e0b;
-        }
-        
-        .quick-actions {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .quick-actions h3 {
-            margin-bottom: 1rem;
-            color: hsl(219, 79%, 24%);
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            background: hsl(43, 96%, 49%);
-            color: hsl(219, 79%, 24%);
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-        
-        .action-btn:hover {
-            background: hsl(43, 96%, 40%);
-        }
-        
-        .back-link {
-            margin-top: 3rem;
-            text-align: center;
-        }
-        
-        .back-link a {
-            color: hsl(219, 79%, 24%);
-            text-decoration: none;
-            font-weight: 600;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="header">
-        <div class="logo">MB Capital Group - Admin Dashboard</div>
-        <div class="header-right">
-            <span id="admin-username">Admin User</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-    </div>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <nav class="bg-white shadow">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold">MB Capital Group - Admin Dashboard</h1>
+                    </div>
+                    <div class="flex items-center">
+                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
-    <div class="container">
-        <h1 class="dashboard-title">Dashboard Overview</h1>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">8</div>
-                <div class="stat-label">Team Members</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">2</div>
-                <div class="stat-label">Active Markets</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">94.2%</div>
-                <div class="stat-label">Avg Occupancy</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">$1,215</div>
-                <div class="stat-label">Avg Rent</div>
-            </div>
-        </div>
-
-        <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="action-buttons">
-                <button class="action-btn" onclick="viewTeamMembers()">View Team</button>
-                <button class="action-btn" onclick="viewMarkets()">Market Data</button>
-                <button class="action-btn" onclick="viewConsultations()">Consultations</button>
-                <button class="action-btn" onclick="viewNewsletter()">Newsletter</button>
-                <button class="action-btn" onclick="viewInvestors()">Investors</button>
-            </div>
-        </div>
-        
-        <div class="nav-grid">
-            <div class="nav-card" onclick="viewTeamMembers()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Team Management
-                </div>
-                <div class="nav-description">
-                    Manage team member profiles, bios, photos, and display settings
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
+                    <div class="text-center">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Welcome to Admin Dashboard</h2>
+                        <p class="text-gray-600 mb-6">Your MB Capital Group admin panel is ready for deployment.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-md mx-auto">
+                            <div class="bg-blue-100 p-4 rounded">
+                                <h3 class="font-semibold">Users</h3>
+                                <p class="text-2xl">1</p>
+                            </div>
+                            <div class="bg-green-100 p-4 rounded">
+                                <h3 class="font-semibold">Markets</h3>
+                                <p class="text-2xl">2</p>
+                            </div>
+                            <div class="bg-yellow-100 p-4 rounded">
+                                <h3 class="font-semibold">Status</h3>
+                                <p class="text-sm">Active</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="nav-card" onclick="viewMarkets()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Market Intelligence
-                </div>
-                <div class="nav-description">
-                    View and manage market data, analytics, and performance metrics
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewConsultations()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Consultation Requests
-                </div>
-                <div class="nav-description">
-                    Review and manage incoming consultation requests from potential investors
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewNewsletter()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Newsletter Management
-                </div>
-                <div class="nav-description">
-                    Manage newsletter subscribers and email distribution campaigns
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewInvestors()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Investor Portal
-                </div>
-                <div class="nav-description">
-                    Manage investor accounts, invitations, and portal access
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewSyndication()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Syndication Documents
-                </div>
-                <div class="nav-description">
-                    Upload and distribute syndication documents to investors
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewAnalytics()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Analytics Dashboard
-                </div>
-                <div class="nav-description">
-                    View website analytics, visitor data, and performance metrics
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewSettings()">
-                <div class="nav-title">
-                    <span class="status-indicator status-warning"></span>
-                    System Settings
-                </div>
-                <div class="nav-description">
-                    Configure API keys, email settings, and system preferences
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewTaxCalculator()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Tax Calculator Management
-                </div>
-                <div class="nav-description">
-                    Manage tax brackets, calculator settings, and usage analytics
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewAISettings()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    AI Recommendations
-                </div>
-                <div class="nav-description">
-                    Configure AI recommendation settings and market priorities
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewK1Documents()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    K1 Tax Documents
-                </div>
-                <div class="nav-description">
-                    Manage K1 tax document distribution and investor access
-                </div>
-            </div>
-            
-            <div class="nav-card" onclick="viewBlogEmails()">
-                <div class="nav-title">
-                    <span class="status-indicator status-active"></span>
-                    Blog Email Distribution
-                </div>
-                <div class="nav-description">
-                    Manage blog content distribution and email campaigns
-                </div>
-            </div>
-        </div>
-        
-        <div class="back-link">
-            <a href="/">← Back to Main Website</a>
         </div>
     </div>
 
     <script>
-        // Navigation functions
-        function viewTeamMembers() {
-            alert('Team Management: View and edit team member profiles, photos, and bios');
-        }
-        
-        function viewMarkets() {
-            alert('Market Intelligence: Access market data for Kansas City and St. Louis markets');
-        }
-        
-        function viewConsultations() {
-            alert('Consultation Requests: Review and respond to investor consultation requests');
-        }
-        
-        function viewNewsletter() {
-            alert('Newsletter Management: Manage email subscribers and distribution lists');
-        }
-        
-        function viewInvestors() {
-            alert('Investor Portal: Manage investor accounts and portal access');
-        }
-        
-        function viewSyndication() {
-            alert('Syndication Documents: Upload and distribute investment documents');
-        }
-        
-        function viewAnalytics() {
-            alert('Analytics Dashboard: View website traffic and visitor analytics');
-        }
-        
-        function viewSettings() {
-            alert('System Settings: Configure API keys and system preferences');
-        }
-        
-        function viewTaxCalculator() {
-            alert('Tax Calculator: Manage tax brackets and calculator settings');
-        }
-        
-        function viewAISettings() {
-            alert('AI Recommendations: Configure AI recommendation engine');
-        }
-        
-        function viewK1Documents() {
-            alert('K1 Documents: Manage tax document distribution');
-        }
-        
-        function viewBlogEmails() {
-            alert('Blog Emails: Manage blog content distribution');
-        }
-        
         function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('admin_token');
-                window.location.href = '/admin/login';
-            }
-        }
-        
-        // Load admin username from localStorage
-        const adminToken = localStorage.getItem('admin_token');
-        if (adminToken && adminToken.includes('admin')) {
-            document.getElementById('admin-username').textContent = 'Admin User';
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/admin/login';
+                });
         }
     </script>
 </body>
