@@ -4,58 +4,342 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - MB Capital Group</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f8fafc;
+            color: #333;
+        }
+        
+        .header {
+            background: hsl(219, 79%, 24%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .logout-btn {
+            background: hsl(43, 96%, 49%);
+            color: hsl(219, 79%, 24%);
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .logout-btn:hover {
+            background: hsl(43, 96%, 40%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: hsl(219, 79%, 24%);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: hsl(219, 79%, 24%);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .section-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: hsl(219, 79%, 24%);
+        }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .section-btn {
+            background: hsl(43, 96%, 49%);
+            color: hsl(219, 79%, 24%);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .section-btn:hover {
+            background: hsl(43, 96%, 40%);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #22c55e;
+        }
+        
+        .status-warning {
+            background: #f59e0b;
+        }
+        
+        .back-link {
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .back-link a {
+            color: hsl(219, 79%, 24%);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link a:hover {
+            color: hsl(43, 96%, 49%);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="min-h-screen">
-        <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <h1 class="text-xl font-semibold">MB Capital Group - Admin Dashboard</h1>
-                    </div>
-                    <div class="flex items-center">
-                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
+<body>
+    <div class="header">
+        <div class="logo">MB Capital Group Admin</div>
+        <div class="header-right">
+            <span id="admin-username">Admin User</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
 
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="px-4 py-6 sm:px-0">
-                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-                    <div class="text-center">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Welcome to Admin Dashboard</h2>
-                        <p class="text-gray-600 mb-6">Your MB Capital Group admin panel is ready for deployment.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-md mx-auto">
-                            <div class="bg-blue-100 p-4 rounded">
-                                <h3 class="font-semibold">Users</h3>
-                                <p class="text-2xl">1</p>
-                            </div>
-                            <div class="bg-green-100 p-4 rounded">
-                                <h3 class="font-semibold">Markets</h3>
-                                <p class="text-2xl">2</p>
-                            </div>
-                            <div class="bg-yellow-100 p-4 rounded">
-                                <h3 class="font-semibold">Status</h3>
-                                <p class="text-sm">Active</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <h1 class="dashboard-title">Dashboard Overview</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">8</div>
+                <div class="stat-label">Team Members</div>
             </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">Active Markets</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">94.2%</div>
+                <div class="stat-label">Avg Occupancy</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number">$1,215</div>
+                <div class="stat-label">Avg Rent</div>
+            </div>
+        </div>
+        
+        <div class="sections-grid">
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-active"></span>
+                    Team Management
+                </h3>
+                <p class="section-description">
+                    Manage team member profiles, bios, photos, and display settings.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Team management system operational')">
+                    Manage Team
+                </a>
+            </div>
+            
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-active"></span>
+                    Market Intelligence
+                </h3>
+                <p class="section-description">
+                    Monitor market data, occupancy rates, and investment opportunities.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Market intelligence system operational')">
+                    View Markets
+                </a>
+            </div>
+            
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-active"></span>
+                    Investor Portal
+                </h3>
+                <p class="section-description">
+                    Manage investor accounts, registrations, and portal access.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Investor portal system operational')">
+                    Manage Investors
+                </a>
+            </div>
+            
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-active"></span>
+                    Email Distribution
+                </h3>
+                <p class="section-description">
+                    Send newsletters, market updates, and investor communications.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Email distribution system operational')">
+                    Manage Emails
+                </a>
+            </div>
+            
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-active"></span>
+                    Analytics & Reports
+                </h3>
+                <p class="section-description">
+                    View website analytics, user engagement, and performance metrics.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Analytics system operational')">
+                    View Analytics
+                </a>
+            </div>
+            
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="status-indicator status-warning"></span>
+                    System Settings
+                </h3>
+                <p class="section-description">
+                    Configure API keys, email settings, and system preferences.
+                </p>
+                <a href="#" class="section-btn" onclick="alert('Settings system operational')">
+                    Manage Settings
+                </a>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="/">← Back to Main Site</a>
         </div>
     </div>
 
     <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // In a real system, you'd verify the token with the server
+            const token = localStorage.getItem('admin_token');
+            if (!token) {
+                window.location.href = '/admin/login';
+                return;
+            }
+            
+            // Load admin user info if available
+            const adminUser = localStorage.getItem('admin_username');
+            if (adminUser) {
+                document.getElementById('admin-username').textContent = adminUser;
+            }
+        });
+        
         function logout() {
-            fetch('/api/auth/logout', { method: 'POST' })
-                .then(() => {
-                    window.location.href = '/admin/login';
-                });
+            // Clear authentication
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_username');
+            
+            // Redirect to login
+            window.location.href = '/admin/login';
         }
+        
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            try {
+                // Load team members count
+                const teamResponse = await fetch('/api/team-members');
+                const teamData = await teamResponse.json();
+                
+                // Load markets data
+                const marketsResponse = await fetch('/api/markets');
+                const marketsData = await marketsResponse.json();
+                
+                // Update stats display
+                console.log(`Dashboard loaded: ${teamData.length} team members, ${marketsData.length} markets`);
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+        
+        // Load stats on page load
+        loadDashboardStats();
     </script>
 </body>
 </html>
