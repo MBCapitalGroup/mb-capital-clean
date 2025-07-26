@@ -1,24 +1,27 @@
 {
-  "name": "mb-capital-group",
+  "name": "mb-capital-group-production",
   "version": "1.0.0",
-  "description": "MB Capital Group website",
-  "main": "production-server.js",
+  "description": "MB Capital Group - Real Estate Syndication Platform",
+  "main": "render-production-server-fixed.js",
   "scripts": {
-    "start": "node production-server.js"
+    "start": "node render-production-server-fixed.js",
+    "dev": "node render-production-server-fixed.js"
   },
   "dependencies": {
-    "express": "4.18.2",
-    "express-session": "1.17.3",
-    "connect-pg-simple": "9.0.1",
-    "passport": "0.6.0",
-    "passport-local": "1.0.0",
-    "bcrypt": "5.1.1",
-    "multer": "1.4.5-lts.1",
-    "@sendgrid/mail": "8.1.0",
-    "googleapis": "126.0.1",
-    "memorystore": "1.6.7"
+    "express": "^4.18.2",
+    "bcrypt": "^5.1.0",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   },
   "engines": {
-    "node": "18.x"
-  }
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "real-estate",
+    "syndication",
+    "multifamily",
+    "investment"
+  ],
+  "author": "MB Capital Group"
 }
