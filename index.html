@@ -1725,7 +1725,7 @@
                 
                 if (!member) return;
                 
-                document.getElementById('modal-team-photo').style.backgroundImage = `url('/${member.imageUrl}')`;
+                document.getElementById('modal-team-photo').style.backgroundImage = `url('${member.image}')`;
                 document.getElementById('modal-team-name').textContent = member.name;
                 document.getElementById('modal-team-title').textContent = member.title;
                 document.getElementById('modal-team-bio').innerHTML = member.bio;
@@ -2547,7 +2547,7 @@
                         member.bio.substring(0, 120) + '...' : member.bio;
                     
                     memberDiv.innerHTML = `
-                        <div class="team-photo" style="background-image: url('/${member.imageUrl}')"></div>
+                        <div class="team-photo" style="background-image: url('${member.image}')"></div>
                         <div class="team-name">${member.name}</div>
                         <div class="team-title">${member.title}</div>
                         <div class="team-bio team-bio-short">${bioPreview}</div>
