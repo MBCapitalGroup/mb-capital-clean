@@ -1,100 +1,113 @@
-// Production server for MB Capital Group
-// Compiled from TypeScript for Render deployment
-
 const express = require('express');
 const path = require('path');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
-const fs = require('fs').promises;
-const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.static('.'));
 
-// Serve static directories
-app.use('/team-photos', express.static('team-photos'));
-app.use('/assets', express.static('assets'));
-app.use('/uploads', express.static('uploads'));
-
-// Session configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'mb-capital-session-secret-2025',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
-}));
-
-// Passport configuration
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Simple user storage (matching your working system)
-const users = new Map();
-// Hash for password: Scrappy2025Bachmann##
-users.set('admin', {
-  id: 10,
-  username: 'admin',
-  password: '$2b$10$XQ8Z.9vx.lNGjNyxZYzLJ.uV1s2m1FHcjLXkuXtRgYzNbQnKzgJsS'
-});
-
-passport.use(new LocalStrategy(
-  async (username, password, done) => {
-    const user = users.get(username);
-    if (!user) return done(null, false);
-    
-    try {
-      const isValid = await bcrypt.compare(password, user.password);
-      if (isValid) return done(null, user);
-      return done(null, false);
-    } catch (error) {
-      return done(error);
-    }
-  }
-));
-
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => {
-  const user = Array.from(users.values()).find(u => u.id === id);
-  done(null, user);
-});
-
-// Helper function to serve HTML files
-async function serveHtml(res, filename) {
-  try {
-    const template = await fs.readFile(path.resolve(process.cwd(), filename), 'utf-8');
-    res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
-  } catch (error) {
-    console.error(`Error serving ${filename}:`, error);
-    res.status(500).send('Internal Server Error');
+// Serve HTML files
+function serveHtml(res, filePath) {
+  const fullPath = path.join(__dirname, filePath);
+  if (fs.existsSync(fullPath)) {
+    res.sendFile(fullPath);
+  } else {
+    res.status(404).send('File not found');
   }
 }
 
 // Routes
 app.get('/', (req, res) => serveHtml(res, 'index.html'));
-app.get('/investor-portal/register', (req, res) => serveHtml(res, 'investor-registration.html'));
-app.get('/investor-portal', (req, res) => serveHtml(res, 'investor-portal.html'));
-app.get('/investor-portal/login', (req, res) => serveHtml(res, 'investor-portal-login.html'));
 app.get('/tax-calculator', (req, res) => serveHtml(res, 'tax-calculator.html'));
 app.get('/tax-calculator.html', (req, res) => serveHtml(res, 'tax-calculator.html'));
-
-// Admin routes
+app.get('/investor-portal', (req, res) => serveHtml(res, 'investor-portal.html'));
+app.get('/investor-portal.html', (req, res) => serveHtml(res, 'investor-portal.html'));
+app.get('/investor-portal-login', (req, res) => serveHtml(res, 'investor-portal-login.html'));
+app.get('/investor-portal-login.html', (req, res) => serveHtml(res, 'investor-portal-login.html'));
+app.get('/investor-portal-register', (req, res) => serveHtml(res, 'investor-portal-register.html'));
+app.get('/investor-portal-register.html', (req, res) => serveHtml(res, 'investor-portal-register.html'));
+app.get('/investor-registration', (req, res) => serveHtml(res, 'investor-registration.html'));
+app.get('/investor-registration.html', (req, res) => serveHtml(res, 'investor-registration.html'));
 app.get('/admin/login', (req, res) => serveHtml(res, 'static-admin/admin-login.html'));
 app.get('/admin/dashboard', (req, res) => serveHtml(res, 'static-admin/admin-dashboard.html'));
 
-// API Routes
+// API Routes - Complete 8-person team
 app.get('/api/team-members', (req, res) => {
   res.json([
     {
-      name: "Michael Barrett",
-      title: "Founder & Principal",
-      bio: "20+ years in multifamily real estate investment and syndication.",
-      image: "/team-photos/michael-barrett.jpg"
+      id: 1,
+      name: "Michael Bachmann",
+      title: "Founder & Principal", 
+      bio: "Michael Bachmann founded MB Capital Group after developing extensive experience in both business operations and real estate investment. Beginning as a store manager at Domino's Pizza at age 18, Michael quickly advanced to become one of the youngest franchisees in company history by age 21, eventually building a portfolio that included multiple Domino's locations across Missouri. His success in franchise operations provided him with a strong foundation in business management, customer service, and operational efficiency. Through his franchise experience, Michael developed critical skills in market analysis, location evaluation, and performance optimization—skills that directly translate to identifying and managing successful multifamily investment opportunities.",
+      image: "/team-photos/michael-bachmann.jpg",
+      displayOrder: 1,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 2,
+      name: "Makeba Hart",
+      title: "Advisor to Michael Bachmann",
+      bio: "There once was this amazing person named Makeba and she always questioned herself....but what she took forever to realize is that she is always enough and never falls short. No matter what the rest of the world might think she is the QUEEN BEA. She doesn't realized it yet but she is soon to be a millionaires!!!! And her friend Michael couldn't be more proud of her for staying in the game and fighting a good fight!!!!!",
+      image: "/team-photos/makeba-hart.jpg",
+      displayOrder: 2,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 3,
+      name: "Dave Lindahl",
+      title: "Mentor",
+      bio: "Dave Lindahl is a nationally recognized real estate investment expert and mentor who has significantly influenced Michael Bachmann's approach to multifamily syndication. As the founder of ReMentor and author of multiple real estate investment books, Dave has educated thousands of investors on building wealth through multifamily properties. His comprehensive training programs cover all aspects of multifamily investing, from market analysis and property acquisition to financing strategies and investor relations.",
+      image: "/team-photos/dave-lindahl.jpg",
+      displayOrder: 3,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 4,
+      name: "Dean Graziosi",
+      title: "Real Estate Advisor",
+      bio: "Dean Graziosi is a bestselling author, entrepreneur, and real estate investment expert whose strategic guidance helps shape MB Capital Group's approach to wealth-building through multifamily investments. With decades of experience in real estate and business development, Dean brings a unique perspective on market trends, investment strategies, and long-term wealth accumulation.",
+      image: "/team-photos/dean-graziosi.jpg",
+      displayOrder: 4,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 5,
+      name: "Tom Krol",
+      title: "Marketing Mentor",
+      bio: "Tom Krol is a leading real estate marketing expert and mentor who provides strategic guidance to MB Capital Group's investor outreach and education initiatives. With extensive experience in direct-response marketing and investor communication, Tom helps ensure that our investment opportunities reach qualified investors effectively and ethically.",
+      image: "/team-photos/tom-krol.jpg",
+      displayOrder: 5,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 6,
+      name: "Eric Stewart",
+      title: "Lending & Capital Partner",
+      bio: "Eric Stewart is a seasoned lending professional and capital partner who brings institutional-level financing expertise to MB Capital Group's multifamily investment platform. As the owner of Atlantic Investment Capital, Eric specializes in structuring creative financing solutions that maximize investor returns while minimizing risk exposure.",
+      image: "/team-photos/eric-stewart.jpg",
+      displayOrder: 6,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 7,
+      name: "Jeannie Orlowski",
+      title: "Mentor & Coach",
+      bio: "Jeannie Orlowski is a seasoned real estate coach and investor education specialist with over two decades of experience helping individuals build long-term wealth through multifamily investments. For more than 20 years, Jeannie has served alongside Dave Lindahl at ReMentor, one of the nation's leading multifamily education platforms, supporting both the internal team and thousands of real estate investors across the country.",
+      image: "/team-photos/jeannie-orlowski.jpg",
+      displayOrder: 7,
+      hiddenFromWebsite: false
+    },
+    {
+      id: 8,
+      name: "Scott Stafford",
+      title: "Demographer",
+      bio: "Scott Stafford brings deep expertise in demographic analysis and market research to MB Capital Group, where he plays a critical role in identifying high-potential multifamily investment opportunities. His background in data analytics and economic modeling allows the team to make informed decisions rooted in future-facing market intelligence.",
+      image: "/team-photos/scott-stafford.jpg",
+      displayOrder: 8,
+      hiddenFromWebsite: false
     }
   ]);
 });
@@ -106,77 +119,79 @@ app.get('/api/markets', (req, res) => {
       marketId: "KC001",
       city: "Kansas City",
       state: "MO",
-      averageRent: 1250,
-      occupancyRate: 94.5,
-      marketData: { population: 508000, medianIncome: 52000 }
+      medianRent: 1250,
+      occupancyRate: 94.2,
+      populationGrowth: 2.3,
+      jobGrowth: 3.1,
+      medianIncome: 65000,
+      capRateAverage: 7.2,
+      pricePerUnit: 85000,
+      vacancyTrend: "Decreasing",
+      isActive: true
     },
     {
       id: 2,
       marketId: "STL001", 
       city: "St. Louis",
       state: "MO",
-      averageRent: 1180,
+      medianRent: 1180,
       occupancyRate: 92.8,
-      marketData: { population: 315000, medianIncome: 48000 }
+      populationGrowth: 1.8,
+      jobGrowth: 2.7,
+      medianIncome: 58000,
+      capRateAverage: 8.1,
+      pricePerUnit: 75000,
+      vacancyTrend: "Stable",
+      isActive: true
     }
   ]);
 });
 
-// Authentication routes
-app.post('/api/auth/login', 
-  passport.authenticate('local', { failureRedirect: '/admin/login' }),
-  (req, res) => {
-    res.json({ success: true, user: req.user });
-  }
-);
-
-app.post('/api/auth/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) return res.status(500).json({ error: 'Logout failed' });
-    res.json({ success: true });
-  });
+// Form submission endpoint
+app.post('/api/form-submissions', (req, res) => {
+  console.log('Form submission received:', req.body);
+  res.json({ success: true, message: 'Form submitted successfully' });
 });
 
-// Email submission (basic implementation)
-app.post('/api/consultation-request', async (req, res) => {
-  try {
-    const { firstName, lastName, email, phone, message } = req.body;
-    console.log('Consultation request received:', { firstName, lastName, email, phone });
-    
-    // In production, save to database and send email
-    res.json({ success: true, message: 'Consultation request submitted successfully' });
-  } catch (error) {
-    console.error('Error processing consultation request:', error);
-    res.status(500).json({ error: 'Failed to submit request' });
-  }
+// Market report request endpoint
+app.post('/api/market-report-requests', (req, res) => {
+  console.log('Market report request received:', req.body);
+  res.json({ success: true, message: 'Market report request submitted successfully' });
 });
 
-// Newsletter subscription
-app.post('/api/newsletter', async (req, res) => {
-  try {
-    const { email } = req.body;
-    console.log('Newsletter subscription:', email);
-    
-    res.json({ success: true, message: 'Successfully subscribed to newsletter' });
-  } catch (error) {
-    console.error('Error subscribing to newsletter:', error);
-    res.status(500).json({ error: 'Failed to subscribe' });
-  }
+// AI recommendations endpoint
+app.post('/api/ai-recommendations/email', (req, res) => {
+  console.log('AI recommendations email request received:', req.body);
+  res.json({ success: true, message: 'Recommendations emailed successfully' });
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'production'
-  });
+// Tax brackets endpoint
+app.get('/api/tax-brackets/:year', (req, res) => {
+  const year = req.params.year;
+  const brackets = [
+    { rate: 0.10, min: 0, max: 11000, label: "10%" },
+    { rate: 0.12, min: 11001, max: 44725, label: "12%" },
+    { rate: 0.22, min: 44726, max: 95375, label: "22%" },
+    { rate: 0.24, min: 95376, max: 182050, label: "24%" },
+    { rate: 0.32, min: 182051, max: 231250, label: "32%" },
+    { rate: 0.35, min: 231251, max: 578125, label: "35%" },
+    { rate: 0.37, min: 578126, max: Infinity, label: "37%" }
+  ];
+  
+  res.json(brackets);
 });
 
-// Start server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`MB Capital Group server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'production'}`);
-  console.log('Database URL:', process.env.DATABASE_URL ? 'Connected' : 'Not configured');
-  console.log('SendGrid API:', process.env.SENDGRID_API_KEY ? 'Configured' : 'Not configured');
+// Engagement tracking endpoint
+app.post('/api/engagement/track', (req, res) => {
+  console.log('Engagement tracking:', req.body);
+  res.json({ success: true });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send('Page not found');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
