@@ -1,0 +1,24 @@
+{
+  "name": "mb-capital-group",
+  "version": "1.0.0",
+  "description": "MB Capital Group website",
+  "main": "production-server.js",
+  "scripts": {
+    "start": "node production-server.js"
+  },
+  "dependencies": {
+    "express": "4.18.2",
+    "express-session": "1.17.3",
+    "connect-pg-simple": "9.0.1",
+    "passport": "0.6.0",
+    "passport-local": "1.0.0",
+    "bcrypt": "5.1.1",
+    "multer": "1.4.5-lts.1",
+    "@sendgrid/mail": "8.1.0",
+    "googleapis": "126.0.1",
+    "memorystore": "1.6.7"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
