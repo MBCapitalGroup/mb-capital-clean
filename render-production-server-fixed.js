@@ -9,6 +9,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.'));
 
+// Serve team photos with explicit path
+app.use('/team-photos', express.static(path.join(__dirname, 'team-photos')));
+
 app.use(session({
   secret: 'mb-capital-production-2025',
   resave: false,
