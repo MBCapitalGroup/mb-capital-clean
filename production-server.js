@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
 
 const app = express();
@@ -18,10 +17,10 @@ app.use(session({
   cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-// Working admin user (this password hash works with Scrappy2025Bachmann##)
-const adminUser = {
+// FIXED: Direct password comparison (no bcrypt complexity)
+const adminCredentials = {
   username: 'admin',
-  password: '$2b$10$K8nQ9V2o8NpxzVv.U0wK7uQd6kYh3zW5dLc6rE4cYmOVl7fJGhMa.'
+  password: 'Scrappy2025Bachmann##'
 };
 
 // Admin routes - serve the proper HTML files
@@ -57,37 +56,27 @@ app.get('/working-admin-login', (req, res) => {
   `);
 });
 
-// Login POST handlers with working password verification
-app.post('/admin/login', async (req, res) => {
+// FIXED: Direct password comparison for login
+app.post('/admin/login', (req, res) => {
   const { username, password } = req.body;
   
-  try {
-    if (username === adminUser.username && password === 'Scrappy2025Bachmann##') {
-      req.session.userId = 1;
-      req.session.username = username;
-      res.redirect('/admin/dashboard');
-    } else {
-      res.redirect('/admin/login?error=1');
-    }
-  } catch (error) {
-    console.error('Login error:', error);
+  if (username === adminCredentials.username && password === adminCredentials.password) {
+    req.session.userId = 1;
+    req.session.username = username;
+    res.redirect('/admin/dashboard');
+  } else {
     res.redirect('/admin/login?error=1');
   }
 });
 
-app.post('/working-admin-login', async (req, res) => {
+app.post('/working-admin-login', (req, res) => {
   const { username, password } = req.body;
   
-  try {
-    if (username === adminUser.username && password === 'Scrappy2025Bachmann##') {
-      req.session.userId = 1;
-      req.session.username = username;
-      res.redirect('/working-admin-dashboard');
-    } else {
-      res.redirect('/working-admin-login?error=1');
-    }
-  } catch (error) {
-    console.error('Login error:', error);
+  if (username === adminCredentials.username && password === adminCredentials.password) {
+    req.session.userId = 1;
+    req.session.username = username;
+    res.redirect('/working-admin-dashboard');
+  } else {
     res.redirect('/working-admin-login?error=1');
   }
 });
