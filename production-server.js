@@ -1083,7 +1083,7 @@ app.get('/admin/logout', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(\`✅ MB Capital Group Admin Server running on port \${PORT}\`);
-  console.log(\`🔐 Admin login: https://your-domain.onrender.com/admin/login\`);
-  console.log(\`📊 Admin dashboard: https://your-domain.onrender.com/admin/dashboard\`);
+  console.log('✅ MB Capital Group Admin Server running on port ' + PORT);
+  console.log('🔐 Admin login: https://your-domain.onrender.com/admin/login');
+  console.log('📊 Admin dashboard: https://your-domain.onrender.com/admin/dashboard');
 });
